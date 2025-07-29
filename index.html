@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>English Vocabulary Game - Unit 1</title>
+  <style>
+
+<style>
+  body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to right, #fdfbfb, #ebedee);
+    color: #333;
+    padding: 30px;
+    margin: 0;
+  }
+
+  h1, h2 {
+    text-align: center;
+    color: #2c3e50;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: auto;
+  }
+
+  .word-item, .quiz-item {
+    background-color: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease;
+  }
+
+  .word-item:hover, .quiz-item:hover {
+    transform: scale(1.01);
+  }
+
+  h3 {
+    font-size: 20px;
+    color: #34495e;
+  }
+
+  .trans {
+    font-size: 16px;
+    color: #7f8c8d;
+    margin-left: 10px;
+  }
+
+  button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin: 10px 8px 0 0;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  button:hover {
+    background-color: #2980b9;
+  }
+
+  .result {
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 17px;
+  }
+
+  .correct {
+    color: #27ae60;
+  }
+
+  .wrong {
+    color: #e74c3c;
+  }
+
+  #final-score {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 40px;
+    background-color: #e3f2fd;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px dashed #90caf9;
+    color: #1565c0;
+  }
+</style>
+
+      </style>
+</head>
+<body>
+
+<h2>🔊 Learn 10 English Words</h2>
+
+<div id="word-list">
+  <!-- List of words with audio -->
+</div>
+
+<hr>
+<h2>🧠 Vocabulary Quiz</h2>
+<div id="quiz-container"></div>
+
+<p id="final-score" style="font-size: 18px; font-weight: bold;"></p>
+
+<script>
+const words = [
+  { word: "greeting", meaning: "lời chào", audio: "greeting.mp3" },
+  { word: "culture", meaning: "văn hóa", audio: "culture.mp3" },
+  { word: "traditional", meaning: "truyền thống", audio: "traditional.mp3" },
+  { word: "impress", meaning: "gây ấn tượng", audio: "impress.mp3" },
+  { word: "friendly", meaning: "thân thiện", audio: "friendly.mp3" },
+  { word: "atmosphere", meaning: "không khí", audio: "atmosphere.mp3" },
+  { word: "correspond", meaning: "trao đổi thư", audio: "correspond.mp3" },
+  { word: "peaceful", meaning: "hòa bình", audio: "peaceful.mp3" },
+  { word: "modernize", meaning: "hiện đại hóa", audio: "modernize.mp3" },
+  { word: "majesty", meaning: "vẻ hùng vĩ", audio: "majesty.mp3" }
+];
+
+// Render word list
+const wordList = document.getElementById("word-list");
+words.forEach(w => {
+  const div = document.createElement("div");
+  div.className = "word-item";
+  div.innerHTML = `
+    <h3>${w.word} <span style="color: gray;">(${w.meaning})</span></h3>
+    <button onclick="document.getElementById('${w.word}').play()">🔊 Play</button>
+    <audio id="${w.word}" src="audio/${w.audio}"></audio>
+  `;
+  wordList.appendChild(div);
+});
+
+// Shuffle helper
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+// Create quiz
+const quizContainer = document.getElementById("quiz-container");
+let score = 0;
+
+shuffle(words).forEach((w, index) => {
+  const choices = shuffle([
+    w.meaning,
+    ...shuffle(words.filter(x => x.word !== w.word)).slice(0, 3).map(x => x.meaning)
+  ]);
+
+  const div = document.createElement("div");
+  div.className = "quiz-item";
+  div.innerHTML = `<p><b>Q${index + 1}:</b> What does <i>${w.word}</i> mean?</p>`;
+
+  choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.textContent = choice;
+    btn.onclick = function() {
+      if (btn.disabled) return;
+
+      if (choice === w.meaning) {
+        btn.style.background = "green";
+        btn.textContent += " ✅";
+        score++;
+      } else {
+        btn.style.background = "red";
+        btn.textContent += " ❌";
+      }
+
+      // Disable all buttons in this question
+      const allBtns = div.querySelectorAll("button");
+      allBtns.forEach(b => b.disabled = true);
+
+      // Show result after last question
+      if (index === 9) {
+        const result = document.getElementById("final-score");
+        result.textContent = `🎉 You got ${score} out of 10 correct!`;
+      }
+    };
+    div.appendChild(btn);
+  });
+
+  quizContainer.appendChild(div);
+});
+</script>
+
+</body>
+</html>
